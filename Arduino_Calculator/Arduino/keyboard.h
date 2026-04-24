@@ -1,6 +1,6 @@
 /**
  * Keyboard Input Handler for Arduino Calculator
- * 支持 5x5 矩阵键盘扫描，多模式按键复用
+ * 支持 4x4 矩阵键盘扫描，FN层切换
  */
 
 #ifndef KEYBOARD_H
@@ -19,22 +19,12 @@ enum KeyEvent {
 };
 
 // ============================================================
-// 特殊按键定义
-// ============================================================
-#define KEY_CHAR_CLEAR    'C'
-#define KEY_CHAR_DELETE   'D'
-#define KEY_CHAR_SHIFT    'S'
-#define KEY_CHAR_ALPHA    'A'
-#define KEY_CHAR_MODE     'M'
-#define KEY_CHAR_ENTER    'E'
-
-// ============================================================
 // 初始化键盘
 // ============================================================
 void keyboardInit();
 
 // ============================================================
-// 扫描键盘，返回按键字符
+// 扫描键盘，返回基础层按键字符
 // 如果没有按键按下，返回 '\0'
 // ============================================================
 char keyboardScan();
@@ -50,8 +40,13 @@ KeyEvent getKeyEvent(char& keyChar);
 char waitForKey();
 
 // ============================================================
-// 获取当前模式下的按键映射
+// 根据FN层状态获取实际按键字符
 // ============================================================
-char getKeyForMode(char baseKey, CalcMode mode);
+char getKeyForFnLayer(char baseKey, FnLayerState fnState);
+
+// ============================================================
+// 获取FN层状态名称（用于显示）
+// ============================================================
+const char* getFnLayerName(FnLayerState state);
 
 #endif // KEYBOARD_H

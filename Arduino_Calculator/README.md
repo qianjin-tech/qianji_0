@@ -1,142 +1,111 @@
-# Arduino Advanced Calculator
+# Arduino Advanced Calculator v2.0
 
-一个功能强大的 Arduino 科学计算器，支持基础运算、科学函数、复数运算和矩阵运算。
+一个功能强大的 Arduino 科学计算器项目，包含硬件固件和电脑端控制界面。
 
-## 功能特性
+---
 
-### 基础运算
-- 四则运算：`+`、`-`、`*`、`/`
-- 幂运算：`^`
-- 括号优先级
-- 浮点数支持
-
-### 科学计算
-- 三角函数：`sin()`、`cos()`、`tan()`、`asin()`、`acos()`、`atan()`
-- 双曲函数：`sinh()`、`cosh()`、`tanh()`
-- 对数指数：`ln()`、`log()`、`exp()`、`sqrt()`、`cbrt()`
-- 其他函数：`abs()`、`floor()`、`ceil()`、`round()`、`fact()`（阶乘）
-- 角度/弧度模式切换
-
-### 复数运算
-- 复数四则运算
-- 复数模 `|z|`、辐角 `arg(z)`
-- 复数共轭
-- 复数三角函数：`cSin()`、`cCos()`、`cTan()`
-- 复数指数对数：`cExp()`、`cLn()`
-
-### 矩阵运算
-- 矩阵加减乘
-- 矩阵转置
-- 行列式（最高 4x4）
-- 矩阵求逆（最高 4x4）
-- 矩阵秩
-- LU 分解
-- 线性方程组求解
-
-### 其他功能
-- 变量存储（A-J，共10个）
-- 矩阵存储（M1-M5，共5个）
-- 5x5 矩阵键盘，支持模式切换复用
-- LCD2004 显示
-
-## 硬件需求
-
-| 组件 | 规格 | 数量 |
-|------|------|------|
-| 单片机 | Arduino Uno/Nano | 1 |
-| 显示屏 | LCD2004 (I2C, 0x27) | 1 |
-| 键盘 | 5x5 矩阵键盘 | 1 |
-| 电阻 | 10kΩ（上拉） | 5 |
-
-## 引脚连接
-
-### LCD2004 (I2C)
-- VCC -> 5V
-- GND -> GND
-- SDA -> A4 (Uno/Nano)
-- SCL -> A5 (Uno/Nano)
-
-### 5x5 矩阵键盘
-- 行：D2, D3, D4, D5, D6
-- 列：D7, D8, D9, D10, D11（内部上拉）
-
-## 键盘布局
-
-```
-+----+----+----+----+----+
-| 7  | 8  | 9  | /  | C  |  C = Clear
-+----+----+----+----+----+
-| 4  | 5  | 6  | *  | D  |  D = Delete
-+----+----+----+----+----+
-| 1  | 2  | 3  | -  | S  |  S = Shift/2nd
-+----+----+----+----+----+
-| 0  | .  | =  | +  | A  |  A = Alpha
-+----+----+----+----+----+
-| (  | )  | ^  | M  | E  |  M = Mode, E = Enter
-+----+----+----+----+----+
-```
-
-### 模式切换
-- **Shift (S)**：切换到 2nd 模式，使用科学函数
-- **Alpha (A)**：切换到字母模式，输入变量名
-- **Mode (M)**：切换计算器模式（普通/矩阵/复数）
-
-## 使用示例
-
-```
-sin(30)      -> 0.5        (角度模式)
-cos(PI)      -> -1         (弧度模式)
-sqrt(16)     -> 4
-2^10         -> 1024
-fact(5)      -> 120
-ln(E)        -> 1
-abs(-5)      -> 5
-
-[1,2;3,4]    -> 2x2 matrix
-det(A)       -> 行列式
-inv(A)       -> 逆矩阵
-
-3+4i         -> 复数
-(3+4i)*(1-i) -> 复数乘法
-```
-
-## 文件结构
+## 项目结构
 
 ```
 Arduino_Calculator/
-├── Arduino_Calculator.ino   # 主程序
-├── config.h                 # 配置与常量
-├── scientific_math.h/cpp    # 科学计算库
-├── complex_number.h/cpp     # 复数运算
-├── matrix.h/cpp             # 矩阵运算
-├── expression_parser.h/cpp  # 表达式解析器
-├── keyboard.h/cpp           # 键盘输入
-├── display.h/cpp            # 显示管理
-└── README.md                # 项目说明
+├── Arduino/                    # Arduino 硬件固件
+│   ├── Arduino_Calculator.ino  # 主程序
+│   ├── config.h                # 配置与常量
+│   ├── scientific_math.h/cpp   # 科学计算库
+│   ├── complex_number.h/cpp    # 复数运算
+│   ├── matrix.h/cpp            # 矩阵运算
+│   ├── expression_parser.h/cpp # 表达式解析器
+│   ├── keyboard.h/cpp          # 4x4 键盘输入
+│   ├── display.h/cpp           # LCD 显示管理
+│   └── README.md               # 固件说明
+│
+├── PC_Interface/               # 电脑端控制界面
+│   ├── calculator_gui.py       # 主程序入口
+│   ├── themes.py               # UI 主题配置
+│   ├── calc_engine.py          # 本地计算引擎
+│   ├── serial_comm.py          # 串口通信模块
+│   └── requirements.txt        # Python 依赖
+│
+└── README.md                   # 项目总说明
 ```
 
-## 编译上传
+---
 
-1. 使用 Arduino IDE 打开 `Arduino_Calculator.ino`
-2. 安装 `LiquidCrystal I2C` 库（如未安装）
-3. 选择正确的板子和端口
-4. 点击上传
+## 功能特性
 
-## 串口调试
+### 硬件端（Arduino）
+- **4x4 矩阵键盘**：FN 层切换，无按键冲突
+- **LCD2004 显示**：四行显示输入、结果、状态
+- **科学计算**：三角函数、对数、指数、阶乘等
+- **复数运算**：四则运算、模、辐角、三角函数
+- **矩阵运算**：加减乘、转置、行列式、求逆
+- **串口通信**：支持 PC 端远程控制
 
-连接串口监视器（115200波特率），可用命令：
-- `c` - 清空输入
-- `a` - 切换角度/弧度模式
-- `h` - 显示帮助
+### 电脑端（Python + Tkinter）
+- **美观界面**：暗色主题，现代化 UI
+- **虚拟键盘**：与硬件 4x4 键盘布局一致
+- **本地计算**：不连接硬件也能使用
+- **串口连接**：通过 USB 连接 Arduino
+- **历史记录**：保存计算历史，可点击复用
+- **多面板**：科学函数、复数、矩阵、历史
 
-## 版本历史
+---
 
-- **v1.0** - 初始版本，支持基础运算、科学计算、复数、矩阵
+## 快速开始
+
+### 硬件端
+
+1. 连接 LCD2004 和 4x4 键盘到 Arduino
+2. 用 Arduino IDE 打开 `Arduino/Arduino_Calculator.ino`
+3. 安装 `LiquidCrystal I2C` 库
+4. 编译上传
+
+### 电脑端
+
+```bash
+# 进入 PC 端目录
+cd PC_Interface
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 运行程序
+python calculator_gui.py
+```
+
+---
+
+## 键盘操作
+
+| 操作 | 效果 |
+|------|------|
+| 按 `+` 一次 | 进入 FN 层（下一键使用科学函数）|
+| 按 `+` 两次 | 进入 FN2 层（变量和模式）|
+| FN + `=` | 删除 |
+| FN2 + `=` | 清空 |
+| FN2 + `+` | 切换计算模式 |
+
+---
+
+## 串口命令
+
+```
+>CALC sin(30)+sqrt(16)    # 计算
+>MODE DEG                 # 角度制
+>MODE RAD                 # 弧度制
+>STORE A 3.14             # 存变量
+>RECALL A                 # 读变量
+>RESET                    # 重置
+>STATUS                   # 状态
+```
+
+---
 
 ## 作者
 
 qianjin-tech
 
-## 许可证
+## 版本
 
-MIT License
+- **v2.0** - 4x4键盘 + PC界面 + 串口协议
+- **v1.0** - 初始版本（5x5键盘）

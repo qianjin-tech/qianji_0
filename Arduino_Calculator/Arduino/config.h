@@ -25,53 +25,61 @@
 #define LCD_ROWS        4
 
 // ============================================================
-// 硬件引脚配置 - 5x5 矩阵键盘
+// 硬件引脚配置 - 4x4 矩阵键盘
 // ============================================================
 // 行引脚（输出）
 #define KEY_ROW0        2
 #define KEY_ROW1        3
 #define KEY_ROW2        4
 #define KEY_ROW3        5
-#define KEY_ROW4        6
 
 // 列引脚（输入，带上拉电阻）
-#define KEY_COL0        7
-#define KEY_COL1        8
-#define KEY_COL2        9
-#define KEY_COL3        10
-#define KEY_COL4        11
+#define KEY_COL0        6
+#define KEY_COL1        7
+#define KEY_COL2        8
+#define KEY_COL3        9
 
 // ============================================================
-// 键盘布局定义（5行 x 5列）
+// 键盘布局定义（4行 x 4列）
 // ============================================================
-// 模式切换键
-#define KEY_MODE        24   // 最后一个键作为模式切换
 
-// 基础模式按键定义
-const char KEY_MAP_NORMAL[5][5] PROGMEM = {
-  {'7', '8', '9', '/', 'C'},   // C = Clear
-  {'4', '5', '6', '*', 'D'},   // D = Delete
-  {'1', '2', '3', '-', 'S'},   // S = Shift/2nd
-  {'0', '.', '=', '+', 'A'},   // A = Alpha
-  {'(', ')', '^', 'M', 'E'}    // M = Mode切换, E = Enter/确认
+// 基础层按键定义（默认）
+const char KEY_MAP_NORMAL[4][4] PROGMEM = {
+  {'7', '8', '9', '/'},
+  {'4', '5', '6', '*'},
+  {'1', '2', '3', '-'},
+  {'0', '.', '=', '+'}
 };
 
-// 2nd模式按键定义（科学函数）
-const char KEY_MAP_2ND[5][5] PROGMEM = {
-  {'s', 'c', 't', 'l', 'C'},   // s=sin, c=cos, t=tan, l=log
-  {'S', 'C', 'T', 'L', 'D'},   // S=asin, C=acos, T=atan, L=ln
-  {'e', 'p', 'r', 'q', 'S'},   // e=exp, p=pow, r=sqrt, q=cbrt
-  {'P', 'E', '!', 'a', 'A'},   // P=PI, E=e, !=factorial, a=abs
-  {'h', 'H', 'R', 'M', 'E'}    // h=sinh, H=cosh, R=tanh
+// FN层按键定义（按FN后，下一键使用此层）
+const char KEY_MAP_FN[4][4] PROGMEM = {
+  {'s', 'c', 't', 'l'},   // s=sin, c=cos, t=tan, l=log
+  {'S', 'C', 'T', 'L'},   // S=asin, C=acos, T=atan, L=ln
+  {'e', 'r', 'q', '^'},   // e=exp, r=sqrt, q=cbrt, ^=pow
+  {'(', ')', 'D', 'F'}    // (=左括号, )=右括号, D=Delete, F=FN
 };
 
-// ALPHA模式按键定义（变量与矩阵）
-const char KEY_MAP_ALPHA[5][5] PROGMEM = {
-  {'A', 'B', 'C', 'i', 'C'},   // A,B,C=变量, i=虚数单位
-  {'D', 'E', 'F', 'G', 'D'},
-  {'m', 'n', 'o', 'p', 'S'},   // m=matrix模式
-  {'x', 'y', 'z', 'w', 'A'},
-  {'[', ']', ';', 'M', 'E'}    // []=矩阵括号, ; = 分隔符
+// 2nd-FN层按键定义（连按两次FN锁定）
+const char KEY_MAP_FN2[4][4] PROGMEM = {
+  {'A', 'B', 'C', 'i'},   // A,B,C=变量, i=虚数单位
+  {'G', 'H', 'J', 'K'},   // G,H,J,K=变量
+  {'[', ']', ';', 'M'},   // []=矩阵括号, ;=分隔符, M=矩阵模式
+  {'N', 'O', 'X', 'P'}    // N=MODE切换, O=无, X=CLR清空, P=无
+};
+
+// 特殊按键字符定义
+#define KEY_CHAR_FN       'F'   // FN功能键
+#define KEY_CHAR_DELETE   'D'   // 删除键
+#define KEY_CHAR_CLEAR    'X'   // 清空键
+#define KEY_CHAR_MODE     'N'   // 模式切换
+#define KEY_CHAR_ENTER    '='   // 等号/确认
+
+// FN层状态
+enum FnLayerState {
+  FN_OFF = 0,       // 基础层
+  FN_ONCE = 1,      // FN一次（下一键使用FN层）
+  FN_LOCK = 2,      // FN锁定（持续使用FN层）
+  FN2_LOCK = 3      // 2nd-FN锁定（持续使用2nd-FN层）
 };
 
 // ============================================================
